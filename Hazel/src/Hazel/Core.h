@@ -8,5 +8,7 @@
 		#define HAZEL_API __declspec(dllimport)
 	#endif
 #else
-	#error Hazel only surpport windows!
+	#error Hazel only surpport windows!	// 如果没有定义该宏，则编译期警告
 #endif // HZ_PLATFORM_WINDOWS 
+
+#define BIT(x) (1 << x)
