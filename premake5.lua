@@ -10,6 +10,11 @@ workspace "Hazel"        -- 解决方案名称
 -- 输出路径变量：类似于 debug-windows-x64    
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"   
 
+-- 相对于解决方案目录的相对路径
+IncludeDir = {};
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include" -- 方便后面使用 可以直接用IncludeDir["GLFW"]代替后面的目录，并且更改路径也不用到处查找替换
+include "Hazel/vendor/GLFW"     -- 这一行代码把该目录下的premake5.lua的内容放进来了
+
 project "Hazel"         -- 项目名称
     location "Hazel"
     kind "SharedLib" -- DLL
@@ -30,12 +35,20 @@ project "Hazel"         -- 项目名称
     includedirs
     {
         "%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"
+    }
+
+    links
+    {
+        "GLFW",             -- 项目名  这是在include "Hazel/vendor/GLFW"时，包含进来的那个项目
+        "opengl32.lib"
     }
 
     filter "system:windows" --对特定的系统(windows\OS..)、配置(Debug/Release)、平台(x64 x86)的项目属性
         cppdialect "C++17"  --C++特性版本
-        staticruntime "On"  --需要动态链接库
+        staticruntime "off"  -- 这两条，指定C++->代码生成->运行库为：多线程调试DLL（如果不这样就与GLFW的不同，会报错）
+        runtime "Debug"      
         systemversion "latest"    -- windowsSKD版本,.x表示win10任何版本，11.x则表示win11
 
         defines
