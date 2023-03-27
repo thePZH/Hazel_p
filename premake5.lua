@@ -18,6 +18,9 @@ project "Hazel"         -- 项目名称
     targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- lua的字符串拼接方式
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
     
+    pchheader "hzpch.h"  -- 等同于在项目设置中 设置预编译头文件为 use，并指定头文件为hzpch.h
+    pchsource "Hazel/src/hzpch.cpp" -- 等同于在hzpch.cpp的设置中 预编译头为 create
+
     files                                   -- 包含项目下所有的.h .cpp文件
     {
         "%{prj.name}/src/**.h",    

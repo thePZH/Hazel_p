@@ -2,9 +2,6 @@
 
 #include "Hazel/Core.h"
 
-#include <string>
-#include <functional>	// 这些C++的库文件，最好是做一个预编译头（Precompute header），下一期会做
-
 namespace Hazel {
 
 	// Hazel的事件目前是阻塞事件，意味着它一旦发生，就必须立即被分发和处理，之后会加入事件缓冲机制，在update阶段取出来处理

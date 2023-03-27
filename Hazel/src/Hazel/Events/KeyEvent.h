@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace Hazel {
 
 	class HAZEL_API KeyEvent : public Event	// 一个基类，因为有着相同的keycode
