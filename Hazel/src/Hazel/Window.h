@@ -26,7 +26,7 @@ namespace Hazel {
 	class HAZEL_API Window
 	{
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
+		using EventCallbackFn = std::function<void(Event&)>;	// 规定回调函数的格式，返回值void 参数为Event&
 
 		virtual ~Window() {}
 

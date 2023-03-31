@@ -35,47 +35,49 @@ namespace Hazel {
 
 	class HAZEL_API Event
 	{
-		friend class EventDispatcher;
 	public:
+		bool Handled = false; // 事件是否已被处理，可以在某一层处理中把这个设为true，使得此事件不会继续往下传递
+
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;					// 用于debug
 		virtual int GetCategoryFlags() const = 0;
-		virtual std::string ToString() const { return GetName(); }	// 用于debug，打印事件的信息（虚基类中默认只返回事件名，子类可以重写）
+
+		virtual std::string ToString() const { return GetName(); }	// 用于debug，看下面的<<重载就懂了
 
 		inline bool IsInCategory(EventCategory category)	// 判断本事件是否是传入的类别中的一个
 		{
 			return GetCategoryFlags() & category;
 		}
-	protected:
-		bool m_Handled = false;	// 事件是否已被处理，可以在某一层处理中把这个设为true，使得此事件不会继续往下传递
 	};
 
+	// 基于event的type来调度事件的方法
+	// 外部，用任何事件创建一个EventDispatcher实例，然后调用N次Dispatch，并传入不同的事件处理函数
 	class EventDispatcher
 	{
 		template<typename T>
 		using EventFn = std::function<bool(T&)>;	// T可以是所有事件类
 	public:
-		EventDispatcher(Event& event)
+		EventDispatcher(Event& event)	
 			: m_Event(event)
 		{
 		}
 
 		template<typename T>
-		bool Dispatch(EventFn<T> func)	// 传入一个函数，这个函数是处理事件的函数
+		bool Dispatch(EventFn<T> func)	// 形参为处理m_Event的函数 bool(*func)(T&)
 		{
-			// 如果本分发器内的事件与函数需要的形参类型匹配，则调用这个函数开始处理
+			// 检查被分发事件的类型是否与模板参数T的类型相匹配
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.m_Handled = func(*(T*)&m_Event);
+				m_Event.Handled = func(*(T*)&m_Event);
 				return true;
 			}
 			return false;
 		}
 	private:
-		Event& m_Event;
+		Event& m_Event;	// 正要分发的事件
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)	// 重载<<操作符，可以让spdlog打印我们自定义的数据类型
 	{
 		return os << e.ToString();
 	}

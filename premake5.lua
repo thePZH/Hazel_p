@@ -47,8 +47,6 @@ project "Hazel"         -- 项目名称
 
     filter "system:windows" --对特定的系统(windows\OS..)、配置(Debug/Release)、平台(x64 x86)的项目属性
         cppdialect "C++17"  --C++特性版本
-        staticruntime "off"  -- 这两条，指定C++->代码生成->运行库为：多线程调试DLL（如果不这样就与GLFW的不同，会报错）
-        runtime "Debug"      
         systemversion "latest"    -- windowsSKD版本,.x表示win10任何版本，11.x则表示win11
 
         defines
@@ -66,14 +64,17 @@ project "Hazel"         -- 项目名称
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+        buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+        buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+        buildoptions "/MD"
 		optimize "On"
 
 project "Sandbox"
@@ -113,12 +114,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
+        buildoptions "/MDd"
         symbols "On"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
+        buildoptions "/MD"
         optimize "On" 
 
     filter "configurations:Dist"
         defines "HZ_DIST"
+        buildoptions "/MD"
         optimize "On"
