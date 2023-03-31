@@ -13,7 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- 相对于解决方案目录的相对路径
 IncludeDir = {};
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include" -- 方便后面使用 可以直接用IncludeDir["GLFW"]代替后面的目录，并且更改路径也不用到处查找替换
+IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
+
 include "Hazel/vendor/GLFW"     -- 这一行代码把该目录下的premake5.lua的内容放进来了
+include "Hazel/vendor/Glad"
 
 project "Hazel"         -- 项目名称
     location "Hazel"
@@ -36,12 +39,14 @@ project "Hazel"         -- 项目名称
     {
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}"
     }
 
     links
     {
         "GLFW",             -- 项目名  这是在include "Hazel/vendor/GLFW"时，包含进来的那个项目
+        "Glad",
         "opengl32.lib"
     }
 
@@ -52,7 +57,8 @@ project "Hazel"         -- 项目名称
         defines
         {
             "HZ_PLATFORM_WINDOWS",
-            "HZ_BUILD_DLL"
+            "HZ_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
 
         postbuildcommands

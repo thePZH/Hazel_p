@@ -5,6 +5,8 @@
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/ApplicationEvent.h"
 
+#include <glad/glad.h>
+
 namespace Hazel {
 
 	static bool s_GLFWInitialized = false;
@@ -50,6 +52,8 @@ namespace Hazel {
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
 		// 将一个指向用户定义数据的指针与窗口相关联。在处理窗口事件时，通过glfwGetWindowUserPointer来获取这个指针，并使用它来访问用户定义的数据(任何数据)。
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
@@ -60,6 +64,7 @@ namespace Hazel {
 			data.Width = width;
 			data.Height = height;
 
+			// 在这里用窗口事件构造引擎的事件，传递给引擎端（Application)
 			WindowResizeEvent event(width, height);
 			data.EventCallback(event);	// 函数调用，调用WindowsWindow中的函数指针指向的函数，即Application对象的OnEvent()函数
 		});
